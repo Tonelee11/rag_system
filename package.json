@@ -1,0 +1,25 @@
+{
+  "name": "tanzlite-agent",
+  "version": "1.0.0",
+  "description": "AI Agent for Tanzlite Digital",
+  "type": "module",
+  "scripts": {
+    "crawl": "node crawler/crawler.js",
+    "embed": "node embeddings/embed.js",
+    "upload": "node pinecone/upload.js",
+    "chat": "node agent/chat.js",
+    "chat:debug": "cross-env DEBUG=true node agent/chat.js",
+    "start": "node api/server.js",
+    "dev": "node --watch api/server.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "xml2js": "^0.6.2"
+  }
+}
