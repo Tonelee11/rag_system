@@ -21,7 +21,9 @@ app.use(cors({
   "http://localhost:5500",
   "http://127.0.0.1",
   "http://127.0.0.1:5500",
+  "https://tonelee11.github.io/rag_system"
   "https://www.tanzlite.com",
+  "https://ragsystem-production-f1b2.up.railway.app/"
   "https://tanzlite.com",
 ];
     // Allow requests with no origin (Postman, curl) during development
