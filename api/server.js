@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "https://tonelee11.github.io, https://tonelee11.github.io/rag_system";
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "https://tonelee11.github.io";
 
 // ── Security Middleware ─────────────────────────────────────────────
 
