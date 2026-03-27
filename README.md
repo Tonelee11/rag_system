@@ -7,7 +7,7 @@ An AI-powered customer support agent for [Tanzlite Digita], built with RAG (Retr
 ```
 tanzlite.com → Crawler → Chunker → OpenAI Embeddings → Pinecone
                                                            ↓
-WordPress Widget ← REST API ← RAG Agent ← Vector Search ──┘
+site page ← REST API ← RAG Agent ← Vector Search ──┘
 ```
 
 ## Tech Stack
@@ -38,12 +38,6 @@ tanzlite-agent/
 ## Setup
 
 ### 1. Clone and install
-
-### 2. Configure environment
-```bash
-cp .env.example .env
-# Edit .env and fill in your API keys
-```
 
 ### 3. Run the pipeline
 
