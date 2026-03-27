@@ -5,15 +5,16 @@ export const chatRoute = express.Router();
 
 /**
  * POST /api/chat
+ * Public endpoint — no API key required
+ * Protected by CORS + rate limiting in server.js
+ *
  * Body: {
  *   question: string,
- *   history?: [{role: "user"|"assistant", content: string}],
- *   language?: "en" | "sw"
+ *   history?: [{role: "user"|"assistant", content: string}]
  * }
- * Headers: x-api-key: your-key
  */
 chatRoute.post("/", async (req, res) => {
-  const { question, history = [], language } = req.body;
+  const { question, history = [] } = req.body;
 
   // Input validation
   if (!question || typeof question !== "string") {
@@ -25,30 +26,23 @@ chatRoute.post("/", async (req, res) => {
   if (question.length > 500) {
     return res.status(400).json({ error: "Question too long. Maximum 500 characters." });
   }
-
-  // Validate history format — must be array of {role, content}
   if (!Array.isArray(history)) {
     return res.status(400).json({ error: "History must be an array." });
   }
 
-  // Sanitize history — only keep valid turns, max last 10 turns
+  // Sanitize history
   const validRoles = ["user", "assistant"];
   const cleanHistory = history
     .filter((h) => h && validRoles.includes(h.role) && typeof h.content === "string")
     .map((h) => ({ role: h.role, content: h.content.slice(0, 1000) }))
-    .slice(-20); // max 10 turns (20 messages)
-
-  // Optional language filter
-  const filter = {};
-  if (language && ["en", "sw"].includes(language)) {
-    filter.language = language;
-  }
+    .slice(-20);
 
   try {
-    const result = await ask(question, cleanHistory, filter);
+    const result = await ask(question, cleanHistory);
 
     return res.json({
       answer: result.answer,
+      // Sources stripped — titles only, no raw text exposed
       sources: result.sources.map((s) => ({
         title: s.title,
         url: s.url,
