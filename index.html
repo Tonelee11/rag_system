@@ -6,112 +6,258 @@
 <title>Zara — Tanzlite Digital</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: #1a1a1a; color: #e0e0e0;
+    background: #111;
+    color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 15px; height: 100vh; display: flex; flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
   }
+
+  #chat-container {
+    width: 100%;
+    max-width: 720px;
+    height: 90vh;
+    max-height: 780px;
+    background: #1a1a1a;
+    border-radius: 16px;
+    border: 1px solid #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
   #header {
-    padding: 16px 24px; border-bottom: 1px solid #2a2a2a;
-    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    background: #1a1a1a;
   }
-  #header .left { display: flex; align-items: center; gap: 12px; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
   .avatar {
-    width: 36px; height: 36px; border-radius: 50%; background: #0BE56D;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #0BE56D;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 15px; color: #014A60;
+    font-weight: 700; font-size: 16px; color: #014A60;
+    flex-shrink: 0;
   }
   .name { font-weight: 600; color: #fff; font-size: 15px; }
-  .status { font-size: 12px; color: #0BE56D; margin-top: 2px; }
+  .status { font-size: 12px; color: #0BE56D; margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #0BE56D; display: inline-block; }
   #reset-btn {
-    background: none; border: 1px solid #333; color: #888;
-    font-size: 12px; padding: 6px 12px; border-radius: 6px;
-    cursor: pointer; transition: all 0.2s;
+    background: none; border: 1px solid #2e2e2e; color: #777;
+    font-size: 12px; padding: 6px 14px; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
   }
-  #reset-btn:hover { border-color: #555; color: #ccc; }
+  #reset-btn:hover { border-color: #444; color: #bbb; }
 
+  /* Messages */
   #messages {
-    flex: 1; overflow-y: auto; padding: 24px;
-    display: flex; flex-direction: column; gap: 0;
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scroll-behavior: smooth;
   }
   #messages::-webkit-scrollbar { width: 4px; }
-  #messages::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  #messages::-webkit-scrollbar-thumb { background: #2e2e2e; border-radius: 4px; }
 
-  .msg-block { padding: 14px 18px; border-left: 3px solid transparent; margin-bottom: 2px; }
-  .msg-block.zara { border-left-color: #0BE56D; background: #222; }
-  .msg-block.user { border-left-color: #014A60; background: transparent; }
-  .msg-label { font-size: 12px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .msg-block {
+    padding: 14px 18px;
+    border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2px;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .msg-block.zara { border-left-color: #0BE56D; background: #1e2a22; }
+  .msg-block.user { border-left-color: #014A60; background: #1a1f2a; }
+  .msg-label {
+    font-size: 11px; font-weight: 700; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
   .msg-block.zara .msg-label { color: #0BE56D; }
-  .msg-block.user .msg-label { color: #5a9ab5; }
-  .msg-text { line-height: 1.7; color: #d0d0d0; white-space: pre-wrap; }
-  .msg-block.zara .msg-text { color: #e8e8e8; }
+  .msg-block.user .msg-label { color: #4a8aaa; }
+  .msg-text { line-height: 1.7; color: #d0d0d0; white-space: pre-wrap; font-size: 14px; }
+  .msg-block.zara .msg-text { color: #e4e4e4; }
   .thinking .msg-text { color: #555; font-style: italic; }
 
+  /* Typing dots */
+  .dots { display: inline-flex; gap: 4px; align-items: center; height: 20px; }
+  .dots span {
+    width: 6px; height: 6px; border-radius: 50%; background: #0BE56D; opacity: 0.4;
+    animation: bounce 1.2s infinite;
+  }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px);opacity:1} }
+
+  /* Input area */
   #input-area {
-    border-top: 1px solid #2a2a2a; padding: 16px 24px;
-    display: flex; gap: 12px; align-items: center; background: #1a1a1a;
+    border-top: 1px solid #2a2a2a;
+    padding: 14px 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #1a1a1a;
+    flex-shrink: 0;
   }
   #question-input {
-    flex: 1; background: transparent; border: none;
-    border-bottom: 1px solid #444; color: #e0e0e0;
-    font-size: 15px; padding: 8px 0; outline: none; font-family: inherit;
+    flex: 1;
+    background: #222;
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    color: #e0e0e0;
+    font-size: 14px;
+    padding: 10px 16px;
+    outline: none;
+    font-family: inherit;
     transition: border-color 0.2s;
+    resize: none;
+    max-height: 100px;
+    min-height: 42px;
+    line-height: 1.5;
   }
-  #question-input:focus { border-bottom-color: #0BE56D; }
-  #question-input::placeholder { color: #555; }
+  #question-input:focus { border-color: #0BE56D; }
+  #question-input::placeholder { color: #444; }
+
   #send-btn {
-    background: none; border: none; cursor: pointer;
-    padding: 6px; opacity: 0.6; transition: opacity 0.2s;
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    background: #014A60; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.15s;
   }
-  #send-btn:hover { opacity: 1; }
-  #send-btn:disabled { opacity: 0.2; cursor: not-allowed; }
-  #send-btn svg { width: 22px; height: 22px; display: block; }
-  #char-count { font-size: 11px; color: #444; min-width: 40px; text-align: right; }
+  #send-btn:hover { background: #0BE56D; transform: scale(1.05); }
+  #send-btn:disabled { background: #222; cursor: not-allowed; transform: none; }
+  #send-btn svg { width: 18px; height: 18px; }
+
+  /* Footer */
+  #footer {
+    text-align: center;
+    padding: 8px;
+    font-size: 11px;
+    color: #333;
+    flex-shrink: 0;
+  }
+  #footer a { color: #0BE56D; text-decoration: none; opacity: 0.7; }
+  #footer a:hover { opacity: 1; }
+
+  /* Suggestions */
+  #suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 20px 14px;
+    flex-shrink: 0;
+  }
+  .suggestion-btn {
+    background: #1e1e1e;
+    border: 1px solid #2e2e2e;
+    color: #888;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .suggestion-btn:hover { border-color: #0BE56D; color: #0BE56D; background: #1e2a22; }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    body { padding: 0; justify-content: flex-start; }
+    #chat-container {
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div id="header">
-  <div class="left">
-    <div class="avatar">Z</div>
-    <div>
-      <div class="name">Zara — Tanzlite Digital</div>
-      <div class="status">● Online</div>
+<div id="chat-container">
+
+  <div id="header">
+    <div class="header-left">
+      <div class="avatar">Z</div>
+      <div>
+        <div class="name">Zara — Tanzlite Digital</div>
+        <div class="status"><span class="status-dot"></span> Online now</div>
+      </div>
     </div>
+    <button id="reset-btn">New chat</button>
   </div>
-  <button id="reset-btn">New conversation</button>
-</div>
 
-<div id="messages"></div>
+  <div id="messages"></div>
 
-<div id="input-area">
-  <input type="text" id="question-input" placeholder="Ask a question..." maxlength="500" autocomplete="off" />
-  <span id="char-count">0/500</span>
-  <button id="send-btn" aria-label="Send">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#0BE56D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="22" y1="2" x2="11" y2="13"/>
-      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-    </svg>
-  </button>
+  <div id="suggestions">
+    <button class="suggestion-btn" onclick="askSuggestion('What services do you offer?')">Services offered</button>
+    <button class="suggestion-btn" onclick="askSuggestion('How do I get started with Tanzlite?')">Get started</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Show me your past work')">Past work</button>
+    <button class="suggestion-btn" onclick="askSuggestion('How can you help my business grow online?')">Grow my business</button>
+  </div>
+
+  <div id="input-area">
+    <textarea id="question-input" placeholder="Ask Zara anything about Tanzlite..." maxlength="500" rows="1"></textarea>
+    <button id="send-btn" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="footer">
+    Powered by <a href="https://tanzlite.com" target="_blank">Tanzlite Digital</a>
+  </div>
+
 </div>
 
 <script>
   const API_URL = "https://ragsystem-production-f1b2.up.railway.app/api/chat";
   const API_KEY = "2ae3a24990438226f8e827a6677999c41bcf53b0f2e21d8b298e10e262d7c76d";
 
-  const messagesEl = document.getElementById("messages");
-  const inputEl    = document.getElementById("question-input");
-  const sendBtn    = document.getElementById("send-btn");
-  const resetBtn   = document.getElementById("reset-btn");
-  const charCount  = document.getElementById("char-count");
+  const messagesEl    = document.getElementById("messages");
+  const inputEl       = document.getElementById("question-input");
+  const sendBtn       = document.getElementById("send-btn");
+  const resetBtn      = document.getElementById("reset-btn");
+  const suggestionsEl = document.getElementById("suggestions");
 
-  // Conversation history stored in memory
   let history = [];
 
-  function addMessage(label, text, type, isThinking = false) {
+  function addMessage(label, content, type, isThinking = false) {
     const block = document.createElement("div");
     block.className = `msg-block ${type}${isThinking ? " thinking" : ""}`;
-    block.innerHTML = `<div class="msg-label">${label}</div><div class="msg-text">${text}</div>`;
+
+    const labelEl = document.createElement("div");
+    labelEl.className = "msg-label";
+    labelEl.textContent = label;
+
+    const textEl = document.createElement("div");
+    textEl.className = "msg-text";
+
+    if (isThinking) {
+      textEl.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+    } else {
+      textEl.textContent = content;
+    }
+
+    block.appendChild(labelEl);
+    block.appendChild(textEl);
     messagesEl.appendChild(block);
     messagesEl.scrollTop = messagesEl.scrollHeight;
     return block;
@@ -122,16 +268,21 @@
     inputEl.disabled = state;
   }
 
-  async function send() {
-    const question = inputEl.value.trim();
+  function hideSuggestions() {
+    suggestionsEl.style.display = "none";
+  }
+
+  async function send(question) {
+    question = (question || inputEl.value).trim();
     if (!question) return;
 
+    hideSuggestions();
     addMessage("You", question, "user");
     inputEl.value = "";
-    charCount.textContent = "0/500";
+    inputEl.style.height = "42px";
     setLoading(true);
 
-    const thinking = addMessage("Zara", "thinking...", "zara", true);
+    const thinking = addMessage("Zara", "", "zara", true);
 
     try {
       const res = await fetch(API_URL, {
@@ -146,44 +297,50 @@
       const data = await res.json();
       thinking.remove();
 
-      const answer = data.answer || "Sorry, I could not get an answer.";
+      const answer = data.answer || "Sorry, I could not get an answer right now.";
       addMessage("Zara", answer, "zara");
 
-      // Add to history for next turn
       history.push({ role: "user", content: question });
       history.push({ role: "assistant", content: answer });
-
-      // Keep last 10 turns max
       if (history.length > 20) history = history.slice(-20);
 
     } catch (err) {
       thinking.remove();
-      addMessage("Zara", "Connection error. Make sure the API is running on localhost:3000.", "zara");
+      addMessage("Zara", "Connection error. Please check your internet and try again.", "zara");
     } finally {
       setLoading(false);
       inputEl.focus();
     }
   }
 
-  // Reset conversation
+  function askSuggestion(q) {
+    inputEl.value = q;
+    send(q);
+  }
+
   resetBtn.addEventListener("click", () => {
     history = [];
     messagesEl.innerHTML = "";
-    addMessage("Zara", "Sure! Let's start fresh. How can I help you?", "zara");
+    suggestionsEl.style.display = "flex";
+    addMessage("Zara", "Sure! Let's start fresh. How can I help you today?", "zara");
     inputEl.focus();
   });
 
-  sendBtn.addEventListener("click", send);
+  sendBtn.addEventListener("click", () => send());
+
   inputEl.addEventListener("keydown", e => {
-    if (e.key === "Enter") { e.preventDefault(); send(); }
-  });
-  inputEl.addEventListener("input", () => {
-    charCount.textContent = `${inputEl.value.length}/500`;
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
   });
 
-  // Welcome message on load
-  addMessage("Zara", "Hi! I'm Zara from Tanzlite Digital. How can I help you today?", "zara");
+  inputEl.addEventListener("input", () => {
+    inputEl.style.height = "42px";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + "px";
+  });
+
+  // Welcome message
+  addMessage("Zara", "Mambo vipi! I'm Zara from Tanzlite Digital. I can answer questions about our services, past work, and how we can help your business grow online. What would you like to know?", "zara");
   inputEl.focus();
 </script>
+
 </body>
 </html>
